@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yangbrew | Premium Kiosk Experience</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght=600;700&family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark-premium: #0B0806;
+            --card-dark-gradient: #15110E;
+            --coffee-gold: #C0956F;
+            --coffee-gold-dim: #A8815F;
+            --text-light-cream: #F5EFEB;
+        }
+
+        html, body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-dark-premium);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-light-cream);
+            scroll-behavior: smooth;
+            min-height: 100vh;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            position: relative;
+            display: block;
+        }
+
+        section {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 100px 0;
+        }
+
+        /* RESTORED AND ENHANCED FOOTER SYSTEM */
+        footer {
+            width: 100%;
+            background-color: #0B0806;
+            position: relative;
+            z-index: 100; /* Tiniyak na hindi matatakpan */
+            padding: 80px 0 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: block;
+            clear: both;
+        }
+
+        .serif-font { font-family: 'Playfair Display', serif; }
+
+        /* Scroll Reveal Animation */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        section.section-visible .scroll-reveal,
+        .contact-target.section-visible + footer .scroll-reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* FIXED ACTIVE STATE: Malinis na kulay, walang underline layout */
+        .nav-link-active {
+            color: var(--coffee-gold) !important;
+            font-weight: 600;
+        }
+
+        #navLinksContainer a, #mobileNavLinksContainer a {
+            text-decoration: none !important;
+        }
+
+        .premium-card {
+            background: linear-gradient(145deg, #16110e, #0e0a08);
+            border: 1px solid rgba(192, 149, 111, 0.12);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        .premium-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(192, 149, 111, 0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .feedback-fade {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        /* Mobile Menu Dropdown */
+        #mobileNavLinksContainer {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        #mobileNavLinksContainer.mobile-menu-open {
+            max-height: 300px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- RESPONSIVE NAVBAR -->
+    <nav class="fixed top-0 left-0 w-full bg-[#0B0806]/95 backdrop-blur-md py-4 px-6 z-[999] border-b border-white/5">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="scrollToSection(0)">
+                <img src="yangbrewlogo.jpg" alt="Yangbrew Logo" class="w-8 h-8 object-contain rounded-md">
+                <span class="text-2xl font-bold text-white serif-font tracking-wide">Yangbrew</span>
+            </div>
+            
+            <!-- Desktop Nav Links -->
+            <div id="navLinksContainer" class="hidden md:flex space-x-8 text-[14px] font-medium tracking-wide">
+                <a href="#home" onclick="event.preventDefault(); scrollToSection(0)" class="text-gray-400 hover:text-white transition-all pb-1">Home</a>
+                <a href="#menuSection" onclick="event.preventDefault(); scrollToSection(1)" class="text-gray-400 hover:text-white transition-all pb-1">Menu</a>
+                <a href="#reviews" onclick="event.preventDefault(); scrollToSection(2)" class="text-gray-400 hover:text-white transition-all pb-1">Reviews</a>
+                <a href="#contact" onclick="event.preventDefault(); scrollToSection(3)" class="text-gray-400 hover:text-white transition-all pb-1">Contact Us</a>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="toggleCouponWidget()" class="bg-[#C0956F] text-black font-semibold text-xs md:text-sm px-4 md:px-5 py-2.5 rounded-lg hover:bg-[#A8815F] transition-all duration-300 shadow-md">
+                    🎫 Coupons
+                </button>
+                <button onclick="toggleMobileMenu()" class="block md:hidden text-gray-400 hover:text-white focus:outline-none" aria-label="Toggle Menu">
+                    <svg id="burgerIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu Dropdown -->
+        <div id="mobileNavLinksContainer" class="md:hidden flex flex-col space-y-4 px-2 pt-2 bg-[#0B0806]">
+            <a href="#home" onclick="event.preventDefault(); closeAndScroll(0)" class="text-gray-400 hover:text-white text-sm py-2 border-b border-white/5">Home</a>
+            <a href="#menuSection" onclick="event.preventDefault(); closeAndScroll(1)" class="text-gray-400 hover:text-white text-sm py-2 border-b border-white/5">Menu</a>
+            <a href="#reviews" onclick="event.preventDefault(); closeAndScroll(2)" class="text-gray-400 hover:text-white text-sm py-2 border-b border-white/5">Reviews</a>
+            <a href="#contact" onclick="event.preventDefault(); closeAndScroll(3)" class="text-gray-400 hover:text-white text-sm py-2">Contact Us</a>
+        </div>
+    </nav>
+
+    <!-- COUPON WIDGET -->
+    <div id="floatingCouponWidget" class="fixed top-1/4 left-4 z-[9999] bg-[#16110e]/95 backdrop-blur-md border border-[#C0956F]/40 p-4 rounded-2xl shadow-2xl max-w-[210px] transition-all duration-300 transform translate-x-0">
+        <div class="flex justify-between items-center mb-2 pb-2 border-b border-white/10">
+            <span class="text-xs font-bold text-[var(--coffee-gold)] uppercase tracking-wider flex items-center gap-1">🎫 Active Codes</span>
+            <button onclick="toggleCouponWidget()" class="text-gray-500 hover:text-white text-[10px]">hide ✕</button>
+        </div>
+        <p class="text-[10px] text-gray-400 mb-3">Click to copy code inside the bucket window to claim discount!</p>
+        <div id="couponsListContainer" class="space-y-2"></div>
+    </div>
+
+    <button id="openCouponWidgetBtn" onclick="toggleCouponWidget()" class="fixed top-1/4 left-0 z-[9998] bg-[#C0956F] text-black font-bold py-3 px-2 rounded-r-xl shadow-2xl hidden items-center justify-center text-xs writing-mode-vertical transition-all">
+        🎫 COUPONS
+    </button>
+
+    <!-- MAIN PAGE WRAPPER (FOR SECTIONS) -->
+    <div class="main-wrapper" id="mainWrapper">
+        
+        <!-- SECTION 1: HOME -->
+        <section id="home" class="bg-[#0B0806]">
+            <div class="container mx-auto px-6 scroll-reveal">
+                <div class="row align-items-center gy-5">
+                    <div class="col-lg-6">
+                        <h1 class="serif-font text-5xl lg:text-7xl font-bold leading-[1.15] mb-6 text-white">
+                            Enjoy The Most <br>
+                            <span class="text-[var(--coffee-gold)]">Delicious Coffee</span>
+                        </h1>
+                        <p class="text-gray-400 text-base lg:text-lg mb-8 max-w-lg leading-relaxed">
+                            Start Your Day With Coffee, Enhancing Productivity And Mood. Its Invigorating Aroma Sets A Focused Tone For Tackling Tasks With Renewed Energy And Positivity.
+                        </p>
+                        <div class="flex gap-4 flex-wrap">
+                            <button onclick="scrollToSection(1)" class="bg-[#C0956F] text-black font-bold px-8 py-3 rounded-md hover:bg-[#A8815F] transition-all text-sm">Explore ↗</button>
+                            <button onclick="scrollToSection(1)" class="border border-gray-600 text-white font-medium px-8 py-3 rounded-md hover:bg-white/5 transition-all text-sm">Order Coffee 🛍️</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 flex justify-center relative">
+                        <div class="relative max-w-md w-full">
+                            <div class="absolute -top-4 -right-4 bg-[#1A130E]/90 backdrop-blur-md border border-[#C0956F]/30 p-3 rounded-xl shadow-xl z-10 text-left max-w-[150px]">
+                                <div class="text-[#C0956F] text-xs mb-1">★★★★★</div>
+                                <p class="text-[10px] text-gray-400 leading-tight">4.9 out of 5 overall star rating for all local business</p>
+                            </div>
+                            <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1000" class="rounded-[2rem] w-full h-[400px] object-cover shadow-2xl border border-white/10">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bestsellers Track -->
+                <div id="bestsellers" class="w-full mt-16">
+                    <div class="flex justify-between items-end mb-6">
+                        <div>
+                            <span class="text-[#C0956F] text-xs font-bold uppercase tracking-widest block mb-1">// Customer Favorites</span>
+                            <h2 class="serif-font text-3xl font-bold text-white">Our Best Selling Items</h2>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="scrollCarousel('bestsellerTrack', -1)" class="w-9 h-9 rounded-full bg-[#1C1612] border border-white/10 text-white flex items-center justify-center hover:bg-[#C0956F] hover:text-black transition-all">❮</button>
+                            <button onclick="scrollCarousel('bestsellerTrack', 1)" class="w-9 h-9 rounded-full bg-[#1C1612] border border-white/10 text-white flex items-center justify-center hover:bg-[#C0956F] hover:text-black transition-all">❯</button>
+                        </div>
+                    </div>
+                    <div id="bestsellerTrack" class="flex gap-6 overflow-x-auto no-scrollbar scroll-smooth py-2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MENU -->
+        <section id="menuSection" class="bg-[#110D0A]">
+            <div class="container mx-auto px-6 scroll-reveal w-full">
+                <div class="text-center mb-8">
+                    <span class="text-[#C0956F] text-xs font-bold uppercase tracking-widest block mb-2">// Choose Your Brew</span>
+                    <h2 class="serif-font text-5xl font-bold text-white">Our Complete Menu</h2>
+                </div>
+                
+                <div class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 text-sm font-semibold uppercase tracking-wider border-b border-white/5 pb-4">
+                    <span class="menu-tab-btn cursor-pointer border-b-2 border-[#C0956F] text-[var(--coffee-gold)] pb-3 px-2 transition-all" onclick="filterMainMenu('espresso', this)">Espresso Series</span>
+                    <span class="menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all" onclick="filterMainMenu('black', this)">Pure Black</span>
+                    <span class="menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all" onclick="filterMainMenu('milk', this)">Milk Coffee Recipes</span>
+                    <span class="menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all" onclick="filterMainMenu('matcha', this)">Matcha & Milktea</span>
+                </div>
+
+                <div class="position-relative px-4">
+                    <button onclick="scrollCarousel('mainMenuTrack', -1)" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-[#1C1612] border border-white/10 text-white flex items-center justify-center hover:bg-[#C0956F] hover:text-black transition-all">❮</button>
+                    <button onclick="scrollCarousel('mainMenuTrack', 1)" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-[#1C1612] border border-white/10 text-white flex items-center justify-center hover:bg-[#C0956F] hover:text-black transition-all">❯</button>
+                    <div id="mainMenuTrack" class="flex gap-6 overflow-x-auto no-scrollbar scroll-smooth py-4 px-2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: REVIEWS -->
+        <section id="reviews" class="bg-[#0B0806]">
+            <div class="container mx-auto px-6 scroll-reveal">
+                <div class="max-w-md mx-auto mb-12 bg-[#16110e] border border-white/10 rounded-xl p-3 flex items-center gap-3 shadow-lg">
+                    <span class="text-gray-400 text-sm">🔍</span>
+                    <input type="text" id="reviewSearchInput" oninput="searchReviewerName()" placeholder="Search reviewer's name (e.g. Kemuel, Jasper)..." class="bg-transparent border-none outline-none text-xs text-white w-full tracking-wide">
+                    <button onclick="clearReviewSearch()" id="clearSearchBtn" class="text-gray-500 hover:text-white text-xs hidden">✕</button>
+                </div>
+
+                <div class="row align-items-center gy-5">
+                    <div class="col-md-7">
+                        <span class="serif-font text-[120px] text-[var(--coffee-gold)] opacity-10 block mb-[-60px]">“</span>
+                        <div id="feedbackCarouselContainer" class="feedback-fade opacity-100">
+                            <h2 id="carouselAuthor" class="serif-font text-5xl font-bold mb-4 text-white">Ricardo Dalmacio</h2>
+                            <p id="carouselText" class="text-gray-400 mb-6 max-w-xl text-lg italic leading-relaxed">"Solid yung kape dito, gising na gising ako sa trabaho. Hindi stonky yung service nila!"</p>
+                            <div id="carouselStars" class="text-[var(--coffee-gold)] text-2xl mb-10">★★★★★</div>
+                        </div>
+                        <div id="dotsContainer" class="flex gap-2 flex-wrap max-w-xs"></div>
+                    </div>
+                    <div class="col-md-5 text-center">
+                        <div class="inline-block bg-[#16110e] p-6 rounded-3xl border border-white/5 shadow-xl w-full max-w-[340px]">
+                            <img id="carouselPic" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400" class="w-44 h-44 rounded-full border-4 border-[#C0956F] mx-auto object-cover shadow-2xl transition-all duration-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div> <!-- ENTIRE SECTIONS WRAPPER ENDS HERE -->
+
+    <!-- ANCHOR TARGET FOR CONTACT OBSERVER AND ALIGNMENT -->
+    <div id="contact" class="contact-target w-full block h-px opacity-0"></div>
+
+    <!-- SECTION 4: FOOTER (STANDALONE ARCHITECTURE FOR NO CLIPPING) -->
+    <footer>
+        <div class="container mx-auto px-6 mb-5 scroll-reveal">
+            <div class="row gy-5">
+                <!-- Brand Info -->
+                <div class="col-md-4">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="yangbrewlogo.jpg" alt="Yangbrew Logo" class="w-8 h-8 object-contain rounded-md">
+                        <span class="serif-font text-2xl text-white font-bold tracking-wide border-l border-gray-700 pl-4">Yangbrew</span>
+                    </div>
+                    <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider text-[var(--coffee-gold)] mb-1">📍 Our Location</p>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Beside OB 136 Boted, Tawang,<br>La Trinidad, Philippines, 2601
+                    </p>
+                </div>
+
+                <!-- Contact Channels -->
+                <div class="col-md-4 text-sm text-gray-400">
+                    <h4 class="text-white serif-font text-xl font-semibold mb-3">Contact Us</h4>
+                    <p class="mb-1 text-gray-500">Email:</p>
+                    <p class="mb-3 text-white font-medium tracking-wide">yangbrewcafe@gmail.com</p>
+                    <p class="mb-1 text-gray-500">Phone Hotline:</p>
+                    <p class="text-[var(--coffee-gold)] font-bold text-base">0961 430 8394</p>
+                </div>
+
+                <!-- Amenities & Social -->
+                <div class="col-md-4 text-sm text-gray-400">
+                    <h4 class="text-white serif-font text-xl font-semibold mb-3">Specialties</h4>
+                    <ul class="text-gray-500 text-xs space-y-1 mb-4 list-disc list-inside">
+                        <li>Dine-in</li>
+                        <li>Outdoor seating</li>
+                        <li>In-store pickup</li>
+                        <li>Reservations</li>
+                    </ul>
+                    <h4 class="text-white serif-font text-sm font-semibold mb-2">Connect With Us</h4>
+                    <div class="flex gap-4">
+                        <a href="https://www.facebook.com/yangbrewcafe" target="_blank" class="text-[var(--coffee-gold)] hover:text-white transition-all font-medium flex items-center gap-1">
+                            Facebook Page ↗
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container mx-auto px-6 border-t border-white/5 pt-4 text-center">
+            <p class="text-[10px] text-gray-600 tracking-[0.3em] uppercase m-0">
+                © 2026 Yangbrew Cafe | Premium Responsive System Architecture
+            </p>
+        </div>
+    </footer>
+
+    <!-- CART TRIGGER AND OTHER UTILITIES -->
+    <div class="fixed bottom-6 right-6 z-[9999] flex flex-col items-end gap-3">
+        <button id="receiptShortcutBtn" onclick="openReceiptModal()" class="hidden bg-amber-600 text-white font-bold py-2.5 px-4 rounded-full shadow-2xl border border-amber-400 items-center gap-2 hover:bg-amber-500 transition-all text-xs">
+            <span>🧾</span> Receipt Here
+        </button>
+        <button onclick="toggleCartDrawer(true)" class="bg-[#C0956F] text-black font-bold p-4 rounded-full shadow-2xl border border-[#A8815F] flex items-center justify-center hover:scale-105 transition-all relative">
+            <span class="text-xl">🛍️</span>
+            <span id="cartCountBadge" class="absolute -top-2 -right-2 bg-red-600 text-white text-[11px] font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-[#0B0806]">0</span>
+        </button>
+    </div>
+
+    <!-- CART SIDE DRAWER PANEL -->
+    <div id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-[#110D0A] shadow-2xl border-l border-white/10 z-[10000] translate-x-full transition-transform duration-500 flex flex-col">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-[#0B0806]">
+            <h3 class="serif-font text-2xl font-bold text-white flex items-center gap-2"><span>🛒</span> Kiosk Order Bucket</h3>
+            <button onclick="toggleCartDrawer(false)" class="text-gray-400 hover:text-white text-xl">✕</button>
+        </div>
+        <div id="cartItemsContainer" class="flex-1 p-6 overflow-y-auto space-y-4 no-scrollbar">
+            <p class="text-gray-500 text-center py-10 text-sm">Your order bucket is empty.</p>
+        </div>
+        <div class="p-6 border-t border-white/10 bg-[#0B0806] space-y-4">
+            <div class="bg-white/5 p-3 rounded-xl border border-white/10 space-y-2">
+                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-400 block">Have a Discount Coupon Code?</label>
+                <div class="flex gap-2">
+                    <input type="text" id="couponCodeInput" placeholder="Enter code here..." class="bg-[#1C1612] border border-white/10 rounded-lg text-xs text-white px-3 py-2 flex-1 outline-none uppercase tracking-widest focus:border-[#C0956F]">
+                    <button onclick="applyDiscountCoupon()" class="bg-[#C0956F] hover:bg-[#A8815F] text-black font-bold text-xs px-4 py-2 rounded-lg transition-all">Apply</button>
+                </div>
+                <p id="couponFeedback" class="text-[10px] hidden"></p>
+            </div>
+            <div class="space-y-1 text-xs text-gray-400">
+                <div class="flex justify-between"><span>Subtotal</span><span id="mathSubtotal">₱0.00</span></div>
+                <div class="flex justify-between"><span>Kiosk Service Tax (12%)</span><span id="mathTax">₱0.00</span></div>
+                <div id="discountRow" class="flex justify-between text-emerald-400 hidden"><span>Discount Applied</span><span id="mathDiscount">-₱0.00</span></div>
+                <div class="flex justify-between text-base font-bold text-white mt-2 pt-2 border-t border-white/5">
+                    <span>Grand Total</span><span id="mathTotal" class="text-[var(--coffee-gold)]">₱0.00</span>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Select Mode of Payment:</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setPaymentMode('Cash')" id="payBtnCash" class="pay-method-btn py-2 text-xs font-bold rounded-lg border border-[#C0956F] bg-[#C0956F] text-black transition-all">💵 Cash</button>
+                    <button onclick="setPaymentMode('GCash')" id="payBtnGCash" class="pay-method-btn py-2 text-xs font-bold rounded-lg border border-white/10 bg-white/5 text-white transition-all">📱 GCash</button>
+                    <button onclick="setPaymentMode('Card')" id="payBtnCard" class="pay-method-btn py-2 text-xs font-bold rounded-lg border border-white/10 bg-white/5 text-white transition-all">💳 Card</button>
+                </div>
+            </div>
+            <button onclick="processKioskCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm tracking-wide transition-all mt-2 shadow-lg">
+                Place Order / Process Kiosk ↗
+            </button>
+        </div>
+    </div>
+
+    <!-- DETAIL MODAL -->
+    <div id="infoModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[20000] hidden items-center justify-center p-4">
+        <div class="bg-[#16110e] border border-white/10 max-w-md w-full rounded-2xl overflow-hidden shadow-2xl p-6 relative">
+            <button onclick="closeInfoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
+            <img id="modalImg" src="" class="w-full h-48 object-cover rounded-xl mb-4 border border-white/5">
+            <h3 id="modalName" class="serif-font text-2xl font-bold text-white mb-2">Coffee Name</h3>
+            <div class="text-yellow-500 text-xs mb-3">★★★★★ <span id="modalRating" class="text-gray-400 ml-1">(4.9)</span></div>
+            <p id="modalDesc" class="text-gray-400 text-sm leading-relaxed mb-6">Descriptions.</p>
+            <div class="flex gap-3 justify-end">
+                <button onclick="closeInfoModal()" class="bg-white/5 text-white border border-white/10 px-4 py-2 rounded-lg text-xs font-bold">Close</button>
+                <button id="modalActionAddBtn" class="bg-[#C0956F] text-black font-bold px-5 py-2 rounded-lg text-xs hover:bg-[#A8815F] transition-all">Add to Bucket 🛒</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- KIOSK RECEIPT MODAL -->
+    <div id="receiptModal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-[30000] hidden items-center justify-center p-4">
+        <div class="bg-white text-black max-w-sm w-full rounded-lg p-6 shadow-2xl border-4 border-double border-black relative font-mono text-xs flex flex-col justify-between">
+            <div>
+                <div class="text-center border-b-2 border-dashed border-gray-400 pb-4 mb-4">
+                    <h4 class="text-xl font-black tracking-wider serif-font">YANGBREW KIOSK</h4>
+                    <p class="text-[10px] text-gray-500">La Trinidad, Benguet</p>
+                    <p class="text-[10px] text-gray-500" id="receiptDate">Date: 2026-06-11</p>
+                </div>
+                <div class="text-center bg-amber-600 text-white p-3 rounded-md mb-4 shadow-sm">
+                    <p class="text-[10px] uppercase tracking-widest text-amber-200">Your Order Queue Number</p>
+                    <h2 class="text-4xl font-black tracking-wide" id="receiptQueueNum">#0000</h2>
+                    <p class="text-[9px] text-white mt-1 font-sans">Present this screen to the counter payment</p>
+                </div>
+                <div class="space-y-2 border-b-2 border-dashed border-gray-400 pb-3 mb-3">
+                    <p class="font-bold uppercase tracking-wider text-[10px]">Items Breakdown:</p>
+                    <div id="receiptItemsContainer" class="space-y-1"></div>
+                </div>
+                <div class="space-y-1 text-right border-b-2 border-dashed border-gray-400 pb-3 mb-3">
+                    <div>Subtotal: <span id="receiptSubtotal">₱0.00</span></div>
+                    <div>Tax (12%): <span id="receiptTax">₱0.00</span></div>
+                    <div id="receiptDiscountRow" class="text-emerald-700 hidden">Discount Applied: <span id="receiptDiscount">-₱0.00</span></div>
+                    <div class="text-sm font-bold mt-1 text-amber-800">TOTAL AMT: <span id="receiptTotal">₱0.00</span></div>
+                </div>
+                <div class="text-center space-y-1 text-gray-600 text-[10px] mb-4">
+                    <p>Payment via: <span class="font-bold text-black" id="receiptPayMethod">Cash</span></p>
+                    <p id="paymentStatusLabel" class="text-amber-600 font-bold uppercase tracking-wider animate-pulse">⏳ PENDING PAYMENT (PROCEED TO CASHIER)</p>
+                </div>
+            </div>
+            <button onclick="terminateReceiptOrder()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-md text-xs tracking-wider uppercase shadow-md transition-all">
+                ✔ Mark As Paid & Close Receipt
+            </button>
+        </div>
+    </div>
+
+    <!-- CORE SYSTEM SCRIPTS -->
+    <script>
+        function toggleMobileMenu() {
+            const container = document.getElementById('mobileNavLinksContainer');
+            const burgerIcon = document.getElementById('burgerIcon');
+            if (container.classList.contains('mobile-menu-open')) {
+                container.classList.remove('mobile-menu-open');
+                burgerIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>`;
+            } else {
+                container.classList.add('mobile-menu-open');
+                burgerIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>`;
+            }
+        }
+
+        function closeAndScroll(index) {
+            toggleMobileMenu();
+            setTimeout(() => { scrollToSection(index); }, 300);
+        }
+
+        // --- FIXED SCROLL TARGET AND INTERSECTION ENGINE ---
+        // Kasama na ang discrete contact anchor point sa targets list nat beh
+        const targets = [
+            document.getElementById('home'),
+            document.getElementById('menuSection'),
+            document.getElementById('reviews'),
+            document.getElementById('contact')
+        ];
+        const desktopLinks = document.querySelectorAll('#navLinksContainer a');
+        const mobileLinks = document.querySelectorAll('#mobileNavLinksContainer a');
+
+        const observerOptions = { root: null, rootMargin: "-25% 0px -25% 0px", threshold: 0.01 };
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    
+                    // Trigger tracking reveal classes
+                    entry.target.classList.add('section-visible');
+                    
+                    desktopLinks.forEach(link => {
+                        link.classList.toggle('nav-link-active', link.getAttribute('href') === `#${id}`);
+                    });
+                    mobileLinks.forEach(link => {
+                        link.classList.toggle('nav-link-active', link.getAttribute('href') === `#${id}`);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        targets.forEach(target => { if(target) sectionObserver.observe(target); });
+        
+        function scrollToSection(index) { 
+            if(targets[index]) {
+                targets[index].scrollIntoView({ behavior: 'smooth', block: 'start' }); 
+            }
+        }
+
+        function scrollCarousel(trackId, direction) {
+            document.getElementById(trackId).scrollLeft += (direction * 310);
+        }
+
+        // --- DATA ARCHITECTURE ---
+        const productsDatabase = [
+            { id: 101, name: "Americano Cream", type: "espresso", rating: "4.9", price: 120, isBestseller: true, desc: "A coffee drink typically made from equal parts espresso and hot water.", img: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?q=80&w=400" },
+            { id: 102, name: "Mocha Dream", type: "espresso", rating: "4.8", price: 155, isBestseller: true, desc: "A coffee drink known for its chocolate sweet, rich premium syrup layers.", img: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?q=80&w=400" },
+            { id: 103, name: "Breve Fusion", type: "espresso", rating: "4.9", price: 160, isBestseller: true, desc: "Breve is a coffee drink made with equal parts espresso and half-and-half milk.", img: "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?q=80&w=400" },
+            { id: 104, name: "Caramel Macchiato", type: "espresso", rating: "4.7", price: 150, isBestseller: false, desc: "Rich espresso marked with velvety foam and smooth golden caramel sauce drizzle.", img: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?q=80&w=400" },
+            { id: 105, name: "White Chocolate Mocha", type: "espresso", rating: "4.8", price: 165, isBestseller: false, desc: "Espresso combined with white chocolate sauce, steamed milk, and whipped cream.", img: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?q=80&w=400" },
+            { id: 201, name: "Black Coffee", type: "black", rating: "4.9", price: 95, isBestseller: true, desc: "Black coffee is a hot coffee beverage simply made without cream or sugar.", img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=400" },
+            { id: 202, name: "Signature French Drip", type: "black", rating: "4.6", price: 110, isBestseller: false, desc: "Slow dripped to absolute perfection highlighting fruity notes.", img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=400" },
+            { id: 203, name: "Cold Brew Craft", type: "black", rating: "4.8", price: 130, isBestseller: false, desc: "24-hour cold water steep extraction showcasing low acidity and maximum caffeine kick.", img: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?q=80&w=400" },
+            { id: 301, name: "Spanish Cortado", type: "milk", rating: "4.8", price: 145, isBestseller: false, desc: "Sweetened condensed milk layers blended gracefully into double ristretto shots.", img: "https://images.unsplash.com/photo-1541123437800-1bb1317badc2?q=80&w=400" },
+            { id: 302, name: "Vanilla Cappuccino", type: "milk", rating: "4.7", price: 140, isBestseller: false, desc: "Traditional frothy espresso blankets blended with organic Madagascar vanilla pod extracts.", img: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?q=80&w=400" },
+            { id: 401, name: "Ceremonial Matcha", type: "matcha", rating: "4.9", price: 165, isBestseller: false, desc: "Hand-whisked premium green tea from Kyoto layered beautifully over dense sweet milk.", img: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?q=80&w=400" },
+            { id: 402, name: "Okinawa Tiger Pearl", type: "matcha", rating: "4.8", price: 130, isBestseller: false, desc: "Deep brown sugar caramelized molasses with fresh bouncy tapioca pearls.", img: "https://images.unsplash.com/photo-1541658016709-82535e94bc69?q=80&w=400" }
+        ];
+
+        function loadBestsellers() {
+            document.getElementById('bestsellerTrack').innerHTML = productsDatabase.filter(p => p.isBestseller).map(item => createCardHTML(item)).join('');
+        }
+
+        function filterMainMenu(category, element) {
+            document.querySelectorAll('.menu-tab-btn').forEach(btn => btn.className = 'menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all');
+            element.className = 'menu-tab-btn cursor-pointer border-b-2 border-[#C0956F] text-[var(--coffee-gold)] pb-3 px-2 transition-all';
+            document.getElementById('mainMenuTrack').innerHTML = productsDatabase.filter(p => p.type === category).map(item => createCardHTML(item)).join('');
+        }
+
+        function createCardHTML(item) {
+            return `
+                <div class="flex-shrink-0 w-[290px] premium-card p-4 flex flex-col justify-between relative">
+                    ${item.isBestseller ? `<div class="absolute top-3 left-3 bg-[#C0956F] text-black font-extrabold text-[9px] uppercase tracking-wider px-2 py-1 rounded shadow-md z-10">⭐ BEST SELLER</div>` : ''}
+                    <div>
+                        <img src="${item.img}" class="w-full h-44 object-cover rounded-xl mb-3">
+                        <h4 class="serif-font text-xl font-bold text-white mb-1">${item.name}</h4>
+                        <p class="text-[var(--coffee-gold)] text-sm font-semibold mb-2">₱${item.price.toFixed(2)}</p>
+                        <p class="text-gray-400 text-xs line-clamp-2 mb-3">${item.desc}</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 border-t border-white/5">
+                        <span class="text-yellow-500 text-[11px]">★★★★★ (${item.rating})</span>
+                        <div class="flex gap-2">
+                            <button onclick="openInfoModal(${item.id})" class="text-[11px] font-semibold text-gray-400 bg-white/5 border border-white/10 px-2.5 py-1.5 rounded-md hover:bg-white/10">More</button>
+                            <button onclick="addToCartBucket(${item.id})" class="text-[11px] font-bold text-black bg-[#C0956F] px-3 py-1.5 rounded-md hover:bg-[#A8815F]">Add 🛍️</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openInfoModal(id) {
+            const item = productsDatabase.find(p => p.id === id);
+            document.getElementById('modalImg').src = item.img;
+            document.getElementById('modalName').innerText = item.name;
+            document.getElementById('modalRating').innerText = `(${item.rating})`;
+            document.getElementById('modalDesc').innerText = item.desc;
+            document.getElementById('modalActionAddBtn').onclick = () => { addToCartBucket(item.id); closeInfoModal(); };
+            document.getElementById('infoModal').className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[20000] flex items-center justify-center p-4';
+        }
+        function closeInfoModal() { document.getElementById('infoModal').className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[20000] hidden items-center justify-center p-4'; }
+
+        // --- REVIEWS SYSTEM ---
+        const reviewDatabase = [
+            { author: "Ricardo Dalmacio", text: `"Solid yung kape dito, gising na gising ako sa trabaho. Hindi stonky yung service nila!"`, stars: "★★★★★", pic: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400" },
+            { author: "Maria Katrina", text: `"Sobrang estetik ng place at napakabait ng mga staff. I love their White Chocolate Mocha!"`, stars: "★★★★★", pic: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400" },
+            { author: "Jasper Carino", text: `"Ang convenient gamitin nung digital kiosk checkout nila. Swift and hassle-free processing talaga."`, stars: "★★★★★", pic: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400" },
+            { author: "Kemuel Andrew", text: `"The system architecture and UI are extremely secure and responsive. Exactly how a high-tier kiosk should look."`, stars: "★★★★★", pic: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400" }
+        ];
+        
+        let currentReviewIndex = 0;
+        let reviewInterval;
+        let isSearchingMode = false;
+
+        function populateReviewDots() {
+            document.getElementById('dotsContainer').innerHTML = reviewDatabase.map((_, idx) => `
+                <span onclick="setReviewIndex(${idx})" class="review-dot w-3 h-1.5 rounded-full bg-gray-700 cursor-pointer transition-all"></span>
+            `).join('');
+        }
+
+        function startReviewCarousel() {
+            if (isSearchingMode) return;
+            reviewInterval = setInterval(() => {
+                currentReviewIndex = (currentReviewIndex + 1) % reviewDatabase.length;
+                updateReviewUI();
+            }, 5000);
+        }
+
+        function setReviewIndex(idx) {
+            clearInterval(reviewInterval);
+            currentReviewIndex = idx;
+            updateReviewUI();
+            startReviewCarousel();
+        }
+
+        function updateReviewUI() {
+            const container = document.getElementById('feedbackCarouselContainer');
+            const pic = document.getElementById('carouselPic');
+            const data = reviewDatabase[currentReviewIndex];
+            
+            container.style.opacity = "0";
+            pic.style.opacity = "0";
+
+            setTimeout(() => {
+                document.getElementById('carouselAuthor').innerText = data.author;
+                document.getElementById('carouselText').innerText = data.text;
+                document.getElementById('carouselStars').innerText = data.stars;
+                pic.src = data.pic;
+                
+                container.style.opacity = "1";
+                pic.style.opacity = "1";
+
+                document.querySelectorAll('.review-dot').forEach((dot, index) => {
+                    dot.className = index === currentReviewIndex ? "review-dot w-8 h-1.5 rounded-full bg-[#C0956F] cursor-pointer transition-all" : "review-dot w-3 h-1.5 rounded-full bg-gray-700 cursor-pointer transition-all";
+                });
+            }, 400);
+        }
+
+        function searchReviewerName() {
+            const input = document.getElementById('reviewSearchInput').value.toLowerCase().trim();
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (input.length > 0) {
+                clearBtn.classList.remove('hidden');
+                clearInterval(reviewInterval);
+                isSearchingMode = true;
+                const foundIndex = reviewDatabase.findIndex(r => r.author.toLowerCase().includes(input));
+                if (foundIndex !== -1) { currentReviewIndex = foundIndex; updateReviewUI(); }
+            } else { clearReviewSearch(); }
+        }
+
+        function clearReviewSearch() {
+            document.getElementById('reviewSearchInput').value = "";
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            isSearchingMode = false;
+            clearInterval(reviewInterval);
+            startReviewCarousel();
+        }
+
+        // --- COUPONS ---
+        let generatedCoupons = [];
+        let appliedCoupon = null;
+
+        function generateRandomCoupons() {
+            const discountPool = [10, 20];
+            const letters = "YANGW";
+            for (let i = 0; i < 4; i++) {
+                const pct = discountPool[Math.floor(Math.random() * discountPool.length)];
+                const code = letters[Math.floor(Math.random() * letters.length)] + letters[Math.floor(Math.random() * letters.length)] + Math.floor(10 + Math.random() * 90) + (pct === 10 ? "X" : "PLUS");
+                generatedCoupons.push({ code: code.toUpperCase(), discount: pct });
+            }
+            document.getElementById('couponsListContainer').innerHTML = generatedCoupons.map(c => `
+                <div onclick="copyCouponCode('${c.code}')" class="bg-black/50 border border-white/5 hover:border-[#C0956F] p-2 rounded-lg flex justify-between items-center cursor-pointer transition-all group">
+                    <span class="font-mono text-xs font-bold text-white tracking-widest group-hover:text-[var(--coffee-gold)]">${c.code}</span>
+                    <span class="bg-emerald-900/80 text-emerald-300 text-[9px] font-extrabold px-1.5 py-0.5 rounded">${c.discount}% OFF</span>
+                </div>
+            `).join('');
+        }
+
+        function copyCouponCode(code) {
+            document.getElementById('couponCodeInput').value = code;
+            document.getElementById('couponFeedback').className = "text-[10px] text-amber-400 block";
+            document.getElementById('couponFeedback').innerText = `Code ${code} pasted!`;
+        }
+
+        function toggleCouponWidget() {
+            const widget = document.getElementById('floatingCouponWidget');
+            const openBtn = document.getElementById('openCouponWidgetBtn');
+            if(widget.classList.contains('translate-x-0')) {
+                widget.classList.replace('translate-x-0', '-translate-x-full');
+                widget.classList.add('opacity-0');
+                openBtn.classList.replace('hidden', 'flex');
+            } else {
+                widget.classList.replace('-translate-x-full', 'translate-x-0');
+                widget.classList.remove('opacity-0');
+                openBtn.classList.replace('flex', 'hidden');
+            }
+        }
+
+        function applyDiscountCoupon() {
+            const inputVal = document.getElementById('couponCodeInput').value.trim().toUpperCase();
+            const feedback = document.getElementById('couponFeedback');
+            const match = generatedCoupons.find(c => c.code === inputVal);
+            if(match) {
+                appliedCoupon = match;
+                feedback.className = "text-[10px] text-emerald-400 block";
+                feedback.innerText = `Success! ${match.discount}% discount applied.`;
+                updateKioskCartUI();
+            } else {
+                feedback.className = "text-[10px] text-red-400 block";
+                feedback.innerText = "Invalid code.";
+            }
+        }
+
+        // --- CART ENGINE ---
+        let kioskCart = [];
+        let selectedPaymentMode = 'Cash';
+        let lastReceiptData = null;
+
+        function toggleCartDrawer(open) {
+            document.getElementById('cartDrawer').style.transform = open ? 'translateX(0)' : 'translateX(100%)';
+        }
+
+        function addToCartBucket(id) {
+            const product = productsDatabase.find(p => p.id === id);
+            const existing = kioskCart.find(item => item.product.id === id);
+            if(existing) { existing.quantity++; } else { kioskCart.push({ product, quantity: 1 }); }
+            updateKioskCartUI();
+        }
+
+        function updateQuantity(id, change) {
+            const target = kioskCart.find(item => item.product.id === id);
+            if(!target) return;
+            target.quantity += change;
+            if(target.quantity <= 0) kioskCart = kioskCart.filter(item => item.product.id !== id);
+            updateKioskCartUI();
+        }
+
+        function setPaymentMode(mode) {
+            selectedPaymentMode = mode;
+            document.querySelectorAll('.pay-method-btn').forEach(btn => btn.className = 'pay-method-btn py-2 text-xs font-bold rounded-lg border border-white/10 bg-white/5 text-white transition-all');
+            document.getElementById(`payBtn${mode}`).className = 'pay-method-btn py-2 text-xs font-bold rounded-lg border border-[#C0956F] bg-[#C0956F] text-black transition-all';
+        }
+
+        function updateKioskCartUI() {
+            const container = document.getElementById('cartItemsContainer');
+            document.getElementById('cartCountBadge').innerText = kioskCart.reduce((acc, current) => acc + current.quantity, 0);
+
+            if(kioskCart.length === 0) {
+                container.innerHTML = `<p class="text-gray-500 text-center py-10 text-sm">Your order bucket is empty.</p>`;
+                document.getElementById('mathSubtotal').innerText = "₱0.00";
+                document.getElementById('mathTax').innerText = "₱0.00";
+                document.getElementById('mathTotal').innerText = "₱0.00";
+                document.getElementById('discountRow').classList.add('hidden');
+                return;
+            }
+
+            container.innerHTML = kioskCart.map(item => `
+                <div class="flex items-center justify-between bg-black/40 p-3 rounded-xl border border-white/5">
+                    <div class="flex items-center gap-3">
+                        <img src="${item.product.img}" class="w-12 h-12 rounded-lg object-cover">
+                        <div>
+                            <h5 class="text-white text-sm font-bold line-clamp-1">${item.product.name}</h5>
+                            <p class="text-xs text-gray-400">₱${(item.product.price * item.quantity).toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white/5 rounded-md px-2 py-1 border border-white/10">
+                        <button onclick="updateQuantity(${item.product.id}, -1)" class="text-gray-400 hover:text-white font-bold text-xs px-1">-</button>
+                        <span class="text-white text-xs font-bold text-center">${item.quantity}</span>
+                        <button onclick="updateQuantity(${item.product.id}, 1)" class="text-gray-400 hover:text-white font-bold text-xs px-1">+</button>
+                    </div>
+                </div>
+            `).join('');
+
+            const subtotal = kioskCart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            const tax = subtotal * 0.12;
+            const totalBeforeDiscount = subtotal + tax;
+            
+            if (appliedCoupon) {
+                const discountAmt = totalBeforeDiscount * (appliedCoupon.discount / 100);
+                document.getElementById('discountRow').classList.remove('hidden');
+                document.getElementById('mathDiscount').innerText = `-₱${discountAmt.toFixed(2)}`;
+                document.getElementById('mathSubtotal').innerText = `₱${subtotal.toFixed(2)}`;
+                document.getElementById('mathTax').innerText = `₱${tax.toFixed(2)}`;
+                document.getElementById('mathTotal').innerText = `₱${(totalBeforeDiscount - discountAmt).toFixed(2)}`;
+            } else {
+                document.getElementById('discountRow').classList.add('hidden');
+                document.getElementById('mathSubtotal').innerText = `₱${subtotal.toFixed(2)}`;
+                document.getElementById('mathTax').innerText = `₱${tax.toFixed(2)}`;
+                document.getElementById('mathTotal').innerText = `₱${totalBeforeDiscount.toFixed(2)}`;
+            }
+        }
+
+        function processKioskCheckout() {
+            if(kioskCart.length === 0) return;
+            const randomQueueNum = "#" + Math.floor(1000 + Math.random() * 9000).toString().substring(1);
+            const subtotal = kioskCart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            const tax = subtotal * 0.12;
+            const totalBeforeDiscount = subtotal + tax;
+            let finalDiscount = appliedCoupon ? (totalBeforeDiscount * (appliedCoupon.discount / 100)) : 0;
+            
+            lastReceiptData = { queue: randomQueueNum };
+            document.getElementById('receiptQueueNum').innerText = randomQueueNum;
+            document.getElementById('receiptPayMethod').innerText = selectedPaymentMode;
+            document.getElementById('receiptSubtotal').innerText = `₱${subtotal.toFixed(2)}`;
+            document.getElementById('receiptTax').innerText = `₱${tax.toFixed(2)}`;
+            document.getElementById('receiptTotal').innerText = `₱${(totalBeforeDiscount - finalDiscount).toFixed(2)}`;
+            
+            if(finalDiscount > 0) {
+                document.getElementById('receiptDiscountRow').classList.remove('hidden');
+                document.getElementById('receiptDiscount').innerText = `-₱${finalDiscount.toFixed(2)}`;
+            } else { document.getElementById('receiptDiscountRow').classList.add('hidden'); }
+            
+            document.getElementById('receiptItemsContainer').innerHTML = kioskCart.map(item => `
+                <div class="flex justify-between text-[11px]"><span>${item.quantity}x ${item.product.name}</span><span>₱${(item.product.price * item.quantity).toFixed(2)}</span></div>
+            `).join('');
+
+            kioskCart = []; appliedCoupon = null;
+            document.getElementById('couponCodeInput').value = "";
+            updateKioskCartUI(); toggleCartDrawer(false); openReceiptModal();
+            document.getElementById('receiptShortcutBtn').className = 'bg-amber-600 text-white font-bold py-2.5 px-4 rounded-full shadow-2xl border border-amber-400 flex items-center gap-2 hover:bg-amber-500 transition-all text-xs';
+        }
+
+        function openReceiptModal() { if(lastReceiptData) document.getElementById('receiptModal').className = 'fixed inset-0 bg-black/95 backdrop-blur-md z-[30000] flex items-center justify-center p-4'; }
+        function closeReceiptModal() { document.getElementById('receiptModal').className = 'fixed inset-0 bg-black/95 backdrop-blur-md z-[30000] hidden items-center justify-center p-4'; }
+        function terminateReceiptOrder() { lastReceiptData = null; closeReceiptModal(); document.getElementById('receiptShortcutBtn').className = 'hidden'; alert("Order sent to cashier dashboard system."); }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadBestsellers();
+            filterMainMenu('espresso', document.querySelector('.menu-tab-btn'));
+            generateRandomCoupons();
+            populateReviewDots();
+            updateReviewUI();
+            startReviewCarousel();
+        });
+    </script>
+</body>
+</html>
