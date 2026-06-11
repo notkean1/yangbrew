@@ -7,7 +7,7 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght=600;700&family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -146,7 +146,6 @@
             opacity: 1;
         }
 
-        /* PURE ICON FLOATING HOVER MOTIONS */
         .pure-icon-btn {
             background: transparent !important;
             border: none !important;
@@ -160,7 +159,6 @@
             filter: drop-shadow(0px 0px 8px rgba(192, 149, 111, 0.6));
         }
         
-        /* Receipt explicit active pulse shadow glow without background shapes */
         .glowing-pure-receipt {
             animation: pulsePureIcon 2.5s infinite alternate;
         }
@@ -172,10 +170,8 @@
 </head>
 <body>
 
-    <!-- SONNER NOTIFICATION OVERLAY HUB -->
     <div id="sonnerToastContainer"></div>
 
-    <!-- RESPONSIVE NAVBAR -->
     <nav class="fixed top-0 left-0 w-full bg-[#0B0806]/95 backdrop-blur-md py-4 px-6 z-[999] border-b border-white/5">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3 cursor-pointer" onclick="scrollToSection(0)">
@@ -183,7 +179,6 @@
                 <span class="text-2xl font-bold text-white serif-font tracking-wide">Yangbrew</span>
             </div>
             
-            <!-- Desktop Nav Links -->
             <div id="navLinksContainer" class="hidden md:flex space-x-8 text-[14px] font-medium tracking-wide">
                 <a href="#home" onclick="event.preventDefault(); scrollToSection(0)" class="text-gray-400 hover:text-white transition-all pb-1">Home</a>
                 <a href="#menuSection" onclick="event.preventDefault(); scrollToSection(1)" class="text-gray-400 hover:text-white transition-all pb-1">Menu</a>
@@ -192,7 +187,6 @@
             </div>
             
             <div class="flex items-center gap-1">
-                <!-- NAVBAR PURE ICON-ONLY COUPONS BUTTON -->
                 <button onclick="toggleCouponWidget()" title="View Available Coupons" class="pure-icon-btn group flex items-center justify-center">
                     <img src="coupon.png" alt="Coupon" class="w-7 h-7 object-contain transition-all">
                 </button>
@@ -204,7 +198,6 @@
             </div>
         </div>
 
-        <!-- Mobile Navigation Menu Dropdown -->
         <div id="mobileNavLinksContainer" class="md:hidden flex flex-col space-y-4 px-2 pt-2 bg-[#0B0806]">
             <a href="#home" onclick="event.preventDefault(); closeAndScroll(0)" class="text-gray-400 hover:text-white text-sm py-2 border-b border-white/5">Home</a>
             <a href="#menuSection" onclick="event.preventDefault(); closeAndScroll(1)" class="text-gray-400 hover:text-white text-sm py-2 border-b border-white/5">Menu</a>
@@ -213,13 +206,12 @@
         </div>
     </nav>
 
-    <!-- PURE ICON-ONLY FLOATING LEFT COUPON TOGGLE (WHEN PANEL IS CLOSED) -->
-    <button id="openCouponWidgetBtn" onclick="toggleCouponWidget()" title="Open Coupon Bucket" class="fixed top-1/4 left-5 z-[9998] pure-icon-btn hidden items-center justify-center">
+    <!-- INAYOS: Nilagyan ng default classes na '-translate-x-full opacity-0' para tugma sa JS panel manipulation -->
+    <button id="openCouponWidgetBtn" onclick="toggleCouponWidget()" title="Open Coupon Bucket" class="fixed top-1/4 left-5 z-[9998] pure-icon-btn flex items-center justify-center">
         <img src="coupon.png" alt="Coupon Icon" class="w-8 h-8 object-contain">
     </button>
 
-    <!-- COUPON PANEL MODAL BAR -->
-    <div id="floatingCouponWidget" class="fixed top-1/4 left-6 z-[9999] bg-[#16110e]/95 backdrop-blur-md border border-[#C0956F]/40 p-4 rounded-2xl shadow-2xl max-w-[220px] transition-all duration-300 transform translate-x-0">
+    <div id="floatingCouponWidget" class="fixed top-1/4 left-6 z-[9999] bg-[#16110e]/95 backdrop-blur-md border border-[#C0956F]/40 p-4 rounded-2xl shadow-2xl max-w-[220px] transition-all duration-300 transform -translate-x-full opacity-0">
         <div class="flex justify-between items-center mb-2 pb-2 border-b border-white/10">
             <span class="text-xs font-bold text-[var(--coffee-gold)] uppercase tracking-wider flex items-center gap-2">
                 <img src="coupon.png" alt="Coupon Icon" class="w-4 h-4 object-contain"> Active Codes
@@ -230,10 +222,8 @@
         <div id="couponsListContainer" class="space-y-2"></div>
     </div>
 
-    <!-- MAIN PAGE WRAPPER -->
     <div class="main-wrapper" id="mainWrapper">
         
-        <!-- SECTION 1: HOME -->
         <section id="home" class="bg-[#0B0806]">
             <div class="container mx-auto px-6 scroll-reveal">
                 <div class="row align-items-center gy-5">
@@ -263,7 +253,6 @@
                     </div>
                 </div>
 
-                <!-- Bestsellers Track -->
                 <div id="bestsellers" class="w-full mt-16">
                     <div class="flex justify-between items-end mb-6">
                         <div>
@@ -280,7 +269,6 @@
             </div>
         </section>
 
-        <!-- SECTION 2: MENU -->
         <section id="menuSection" class="bg-[#110D0A]">
             <div class="container mx-auto px-6 scroll-reveal w-full">
                 <div class="text-center mb-8">
@@ -288,11 +276,13 @@
                     <h2 class="serif-font text-5xl font-bold text-white">Our Complete Menu</h2>
                 </div>
                 
-                <div class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 text-sm font-semibold uppercase tracking-wider border-b border-white/5 pb-4">
-                    <span class="menu-tab-btn cursor-pointer border-b-2 border-[#C0956F] text-[var(--coffee-gold)] pb-3 px-2 transition-all" onclick="filterMainMenu('espresso', this)">Espresso Series</span>
-                    <span class="menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all" onclick="filterMainMenu('black', this)">Pure Black</span>
-                    <span class="menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all" onclick="filterMainMenu('milk', this)">Milk Coffee Recipes</span>
-                    <span class="menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all" onclick="filterMainMenu('matcha', this)">Matcha & Milktea</span>
+                <div id="menuTabsContainer" 
+                    onscroll="resetKioskIdleTimer()"
+                    class="flex overflow-x-auto flex-nowrap whitespace-nowrap gap-6 md:justify-center mb-10 text-sm font-semibold uppercase tracking-wider border-b border-white/5 pb-4 no-scrollbar px-4 snap-x snap-mandatory scroll-smooth">
+                    <span class="menu-tab-btn cursor-pointer border-b-2 border-[#C0956F] text-[var(--coffee-gold)] pb-3 px-2 transition-all flex-shrink-0 snap-start" onclick="handleTabClick('espresso', this)">Espresso Series</span>
+                    <span class="menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all flex-shrink-0 snap-start" onclick="handleTabClick('black', this)">Pure Black</span>
+                    <span class="menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all flex-shrink-0 snap-start" onclick="handleTabClick('milk', this)">Milk Coffee Recipes</span>
+                    <span class="menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all flex-shrink-0 snap-start" onclick="handleTabClick('matcha', this)">Matcha & Milktea</span>
                 </div>
 
                 <div class="position-relative px-4">
@@ -303,7 +293,6 @@
             </div>
         </section>
 
-        <!-- SECTION 3: REVIEWS -->
         <section id="reviews" class="bg-[#0B0806]">
             <div class="container mx-auto px-6 scroll-reveal">
                 <div class="max-w-md mx-auto mb-12 bg-[#16110e] border border-white/10 rounded-xl p-3 flex items-center gap-3 shadow-lg">
@@ -333,10 +322,8 @@
 
     </div>
 
-    <!-- ANCHOR TARGET FOR CONTACT OBSERVER -->
     <div id="contact" class="contact-target w-full block h-px opacity-0"></div>
 
-    <!-- SECTION 4: FOOTER -->
     <footer>
         <div class="container mx-auto px-6 mb-5 scroll-reveal">
             <div class="row gy-5">
@@ -384,24 +371,17 @@
         </div>
     </footer>
 
-    <!-- INTERACTIVE FLOATING PURE-ICON DECK WRAPPER -->
     <div class="fixed bottom-8 right-8 z-[9999] flex flex-col items-center gap-5">
-        
-        <!-- PURE ICON-ONLY RECEIPT SHORTCUT (NO BACKGROUND / LARGER VISIBLE CANVAS) -->
         <button id="receiptShortcutBtn" onclick="openReceiptModal()" title="View Open Receipt Queue" class="hidden pure-icon-btn glowing-pure-receipt">
             <img src="receipt.png" alt="Receipt" class="w-8 h-8 object-contain invert">
         </button>
         
-        <!-- PURE ICON-ONLY ADD TO CART CONTROLLER WITH VISIBLE INTEGRATED BADGE -->
         <button onclick="toggleCartDrawer(true)" title="Open Order Bucket" class="pure-icon-btn relative flex items-center justify-center">
-            <!-- Upsized cleanly to w-8 h-8 for high fidelity and readability -->
             <img src="bag.png" alt="Bag" class="w-8 h-8 object-contain">
-            <!-- Badge positioned on top right of the natural icon asset boundary -->
             <span id="cartCountBadge" class="absolute top-1.5 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border border-[#0B0806] shadow-md">0</span>
         </button>
     </div>
 
-    <!-- CART SIDE DRAWER PANEL -->
     <div id="cartDrawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-[#110D0A] shadow-2xl border-l border-white/10 z-[10000] translate-x-full transition-transform duration-500 flex flex-col">
         <div class="p-6 border-b border-white/5 flex justify-between items-center bg-[#0B0806]">
             <h3 class="serif-font text-2xl font-bold text-white flex items-center gap-2">
@@ -445,7 +425,6 @@
         </div>
     </div>
 
-    <!-- DETAIL MODAL -->
     <div id="infoModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[20000] hidden items-center justify-center p-4">
         <div class="bg-[#16110e] border border-white/10 max-w-md w-full rounded-2xl overflow-hidden shadow-2xl p-6 relative">
             <button onclick="closeInfoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">✕</button>
@@ -462,7 +441,6 @@
         </div>
     </div>
 
-    <!-- KIOSK RECEIPT MODAL -->
     <div id="receiptModal" class="fixed inset-0 bg-black/95 backdrop-blur-md z-[30000] hidden items-center justify-center p-4">
         <div class="bg-white text-black max-w-sm w-full rounded-lg p-6 shadow-2xl border-4 border-double border-black relative font-mono text-xs flex flex-col justify-between">
             <button onclick="closeReceiptModal()" class="absolute top-3 right-3 text-gray-400 hover:text-black font-bold text-sm bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center shadow-sm">✕</button>
@@ -506,9 +484,8 @@
         </div>
     </div>
 
-    <!-- CORE SYSTEM ENGINE SCRIPTS -->
     <script>
-        function triggerSonnerToast(message, iconHtml = "⚡") {
+       function triggerSonnerToast(message, iconHtml = "⚡") {
             const container = document.getElementById('sonnerToastContainer');
             const toast = document.createElement('div');
             toast.className = "sonner-toast";
@@ -594,7 +571,9 @@
 
         function filterMainMenu(category, element) {
             document.querySelectorAll('.menu-tab-btn').forEach(btn => btn.className = 'menu-tab-btn cursor-pointer text-gray-500 hover:text-white pb-3 px-2 transition-all');
-            element.className = 'menu-tab-btn cursor-pointer border-b-2 border-[#C0956F] text-[var(--coffee-gold)] pb-3 px-2 transition-all';
+            if(element) {
+                element.className = 'menu-tab-btn cursor-pointer border-b-2 border-[#C0956F] text-[var(--coffee-gold)] pb-3 px-2 transition-all';
+            }
             document.getElementById('mainMenuTrack').innerHTML = productsDatabase.filter(p => p.type === category).map(item => createCardHTML(item)).join('');
         }
 
@@ -632,7 +611,6 @@
         }
         function closeInfoModal() { document.getElementById('infoModal').className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-[20000] hidden items-center justify-center p-4'; }
 
-        // --- REVIEWS SYSTEM ---
         const reviewDatabase = [
             { author: "Ricardo Dalmacio", text: `"Solid yung kape dito, gising na gising ako sa trabaho. Hindi stonky yung service nila!"`, stars: "★★★★★", pic: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400" },
             { author: "Maria Katrina", text: `"Sobrang estetik ng place at napakabait ng mga staff. I love their White Chocolate Mocha!"`, stars: "★★★★★", pic: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400" },
@@ -669,6 +647,8 @@
             const container = document.getElementById('feedbackCarouselContainer');
             const pic = document.getElementById('carouselPic');
             const data = reviewDatabase[currentReviewIndex];
+            
+            if(!container || !pic || !data) return;
             
             container.style.opacity = "0";
             pic.style.opacity = "0";
@@ -708,7 +688,6 @@
             startReviewCarousel();
         }
 
-        // --- COUPONS CONTEXTS ---
         let generatedCoupons = [];
         let appliedCoupon = null;
 
@@ -727,7 +706,7 @@
             document.getElementById('couponsListContainer').innerHTML = generatedCoupons.map(c => {
                 const isActive = appliedCoupon && appliedCoupon.code === c.code ? 'coupon-card-active' : '';
                 return `
-                    <div id="coupon-card-${c.code}" onclick="selectCouponDirectly('${c.code}')" class="bg-black/50 border border border-white/5 hover:border-[#C0956F] p-2 rounded-lg flex justify-between items-center cursor-pointer transition-all group ${isActive}">
+                    <div id="coupon-card-${c.code}" onclick="selectCouponDirectly('${c.code}')" class="bg-black/50 border border-white/5 hover:border-[#C0956F] p-2 rounded-lg flex justify-between items-center cursor-pointer transition-all group ${isActive}">
                         <span class="font-mono text-xs font-bold text-white tracking-widest group-hover:text-[var(--coffee-gold)]">${c.code}</span>
                         <span class="bg-emerald-900/80 text-emerald-300 text-[9px] font-extrabold px-1.5 py-0.5 rounded">${c.discount}% OFF</span>
                     </div>
@@ -753,14 +732,15 @@
         function toggleCouponWidget() {
             const widget = document.getElementById('floatingCouponWidget');
             const openBtn = document.getElementById('openCouponWidgetBtn');
-            if(widget.classList.contains('translate-x-0')) {
-                widget.classList.replace('translate-x-0', '-translate-x-full');
-                widget.classList.add('opacity-0');
-                openBtn.classList.replace('hidden', 'block');
+            
+            widget.classList.toggle('-translate-x-full');
+            widget.classList.toggle('translate-x-0');
+            widget.classList.toggle('opacity-0');
+            
+            if (widget.classList.contains('translate-x-0')) {
+                openBtn.classList.add('hidden');
             } else {
-                widget.classList.replace('-translate-x-full', 'translate-x-0');
-                widget.classList.remove('opacity-0');
-                openBtn.classList.replace('block', 'hidden');
+                openBtn.classList.remove('hidden');
             }
         }
 
@@ -781,7 +761,6 @@
             }
         }
 
-        // --- CART ENGINE ---
         let kioskCart = [];
         let selectedPaymentMode = 'Cash';
         let lastReceiptData = null;
@@ -863,7 +842,8 @@
 
         function processKioskCheckout() {
             if(kioskCart.length === 0) return;
-            const randomQueueNum = "#" + Math.floor(1000 + Math.random() * 9000).toString().substring(1);
+            
+            const randomQueueNum = "#" + Math.floor(1000 + Math.random() * 9000).toString();
             const subtotal = kioskCart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
             const tax = subtotal * 0.12;
             const totalBeforeDiscount = subtotal + tax;
@@ -916,6 +896,88 @@
             triggerSonnerToast("Payment confirmed! Kiosk active session closed.", "✅");
         }
 
+        // =========================================================================
+        // --- KIOSK AUTO-PLAY & AFK IDLE ARCHITECTURE ENGINE ---
+        // =========================================================================
+        let menuAutoPlayInterval = null;
+        let kioskIdleTimeout = null;
+        let initialLoadGuard = true; // Guard para hindi mapatay ng initial page load render ang auto-play
+        
+        const AFK_TIMEOUT_MS = 30 * 60 * 1000; // 30 Minutes bago mag-afk / attract mode uli
+        const AUTOPLAY_SPEED_MS = 4000;         // Swaswipe / lilipat kada 4 na segundo
+        let currentTabIdx = 0;
+
+        const menuCategoriesPool = [
+            { type: 'espresso', text: 'Espresso Series' },
+            { type: 'black', text: 'Pure Black' },
+            { type: 'milk', text: 'Milk Coffee Recipes' },
+            { type: 'matcha', text: 'Matcha & Milktea' }
+        ];
+
+        function handleTabClick(category, element) {
+            initialLoadGuard = false; // Override guard kapag may manual click na talaga
+            resetKioskIdleTimer(); 
+            currentTabIdx = menuCategoriesPool.findIndex(p => p.type === category);
+            filterMainMenu(category, element);
+        }
+
+        function startMenuAutoPlay() {
+            if (menuAutoPlayInterval) clearInterval(menuAutoPlayInterval);
+            
+            menuAutoPlayInterval = setInterval(() => {
+                currentTabIdx = (currentTabIdx + 1) % menuCategoriesPool.length;
+                const targetCategory = menuCategoriesPool[currentTabIdx];
+                
+                const tabs = document.querySelectorAll('.menu-tab-btn');
+                const targetTabElement = tabs[currentTabIdx];
+                
+                if (targetTabElement) {
+                    // 1. I-render ang data gamit ang filter parameters
+                    filterMainMenu(targetCategory.type, targetTabElement);
+                    
+                    // 2. Kusa nitong isscroll ang mobile-view container pakaliwa't pakanan
+                    const container = document.getElementById('menuTabsContainer');
+                    if(container) {
+                        const scrollLeftPos = targetTabElement.offsetLeft - container.offsetLeft - 16; 
+                        container.scrollTo({ left: scrollLeftPos, behavior: 'smooth' });
+                    }
+                }
+            }, AUTOPLAY_SPEED_MS);
+        }
+
+        function stopMenuAutoPlay() {
+            if (menuAutoPlayInterval) {
+                clearInterval(menuAutoPlayInterval);
+                menuAutoPlayInterval = null;
+            }
+        }
+
+        function resetKioskIdleTimer() {
+            // Kung bago pa lang load ang page, huwag muna patayin ang autoplay
+            if (initialLoadGuard) {
+                initialLoadGuard = false;
+                return;
+            }
+
+            // May interaksyon! Patigilin ang autoplay loop para hindi mahilo ang bumibili
+            stopMenuAutoPlay();
+            
+            clearTimeout(kioskIdleTimeout);
+            
+            // Pagkalipas ng 30 Minutes na walang interaction, babalik sa automatic cycle
+            kioskIdleTimeout = setTimeout(() => {
+                startMenuAutoPlay();
+                triggerSonnerToast("Kiosk entering attract mode. Auto-display active.", "☕");
+            }, AFK_TIMEOUT_MS);
+        }
+
+        // I-attach ang monitoring functions sa page interactions
+        window.addEventListener('mousemove', resetKioskIdleTimer);
+        window.addEventListener('mousedown', resetKioskIdleTimer);
+        window.addEventListener('touchstart', resetKioskIdleTimer, { passive: true });
+        window.addEventListener('keypress', resetKioskIdleTimer);
+
+        // --- APPLIES ONLY ONE IMMUTABLE INITIALIZER ---
         document.addEventListener("DOMContentLoaded", () => {
             loadBestsellers();
             filterMainMenu('espresso', document.querySelector('.menu-tab-btn'));
@@ -923,6 +985,15 @@
             populateReviewDots();
             updateReviewUI();
             startReviewCarousel();
+            
+            // Patakbuhin ang auto-play module
+            startMenuAutoPlay();
+            
+            // Simulan ang countdown watcher
+            clearTimeout(kioskIdleTimeout);
+            kioskIdleTimeout = setTimeout(() => {
+                startMenuAutoPlay();
+            }, AFK_TIMEOUT_MS);
         });
     </script>
 </body>
